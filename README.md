@@ -184,6 +184,13 @@ compatible.
 
 ---
 
+## Acknowledgements
+
+Weave was co-designed and co-developed with the assistance of
+GPT-5.6 Sol by OpenAI and Claude Opus 5 by Anthropic.
+
+---
+
 ## License
 
 Mozilla Public License 2.0. See [LICENSE](LICENSE).
