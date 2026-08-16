@@ -1,0 +1,47 @@
+# Runs OpenAI's own plugin validator against the Codex compatibility layer.
+#
+# Kept out of the blocking workflow on purpose: it downloads the validator from
+# the openai/codex repository, so an upstream move or outage must never redden an
+# unrelated pull request. It is, however, the check that proves the compatibility
+# layer is genuinely compatible rather than merely matching our reading of the
+# rules, so it runs weekly and on demand.
+name: Codex official validator
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Mondays, 05:23 UTC.
+    - cron: "23 5 * * 1"
+
+jobs:
+  official:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install PyYAML
+        run: python -m pip install --quiet pyyaml
+
+      - name: Fetch the official validator
+        run: |
+          curl -fsSL -o validate_plugin.py \
+            https://raw.githubusercontent.com/openai/codex/main/codex-rs/skills/src/assets/samples/plugin-creator/scripts/validate_plugin.py
+          head -5 validate_plugin.py
+
+      - name: Validate the Codex package
+        run: python validate_plugin.py com.openai.codex/weave
+
+      # The repository root is the portable Agent Plugins package, not a Codex
+      # plugin. If this ever starts passing, the layers have been conflated.
+      - name: The repository root must not be a Codex plugin
+        run: |
+          if python validate_plugin.py . ; then
+            echo "::error::the repository root validated as a Codex plugin; the layers have been conflated"
+            exit 1
+          fi
+          echo "confirmed: the root is the portable package, not a Codex plugin"

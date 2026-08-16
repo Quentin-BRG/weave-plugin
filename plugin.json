@@ -1,0 +1,26 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "weave",
+  "version": "1.0.0",
+  "description": "Work safely inside a Weave live collaboration session: a shared working tree, Tasks with advisory soft locks, explicit conflicts, and host-only Git publication, all driven through the weave CLI.",
+  "author": {
+    "name": "Quentin-BRG",
+    "url": "https://github.com/Quentin-BRG"
+  },
+  "homepage": "https://github.com/Quentin-BRG/weave-plugin",
+  "repository": "https://github.com/Quentin-BRG/weave-plugin",
+  "license": "MPL-2.0",
+  "keywords": [
+    "weave",
+    "collaboration",
+    "git",
+    "realtime",
+    "cli"
+  ],
+  "extensions": {
+    "com.openai.codex": {
+      "packageDirectory": "./com.openai.codex/weave",
+      "marketplace": "./.agents/plugins/marketplace.json"
+    }
+  }
+}

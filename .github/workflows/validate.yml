@@ -1,0 +1,35 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      # The portable package is the source of truth, so it is checked first and
+      # on its own terms: Agent Plugins v1.0.0, then Agent Skills, then the
+      # neutrality and Weave safety rules the skills exist to carry.
+      - name: Agent Plugins v1.0.0 and Agent Skills
+        run: python scripts/validate_agent_plugin.py .
+
+      # The Codex layer is validated separately. Passing this says nothing about
+      # portable conformance, and vice versa.
+      - name: Codex packaging and marketplace
+        run: python scripts/validate_codex_plugin.py .
+
+      - name: Codex package is in sync with the canonical skills
+        run: python scripts/sync_codex_package.py --check
