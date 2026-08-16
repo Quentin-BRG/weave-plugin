@@ -70,6 +70,7 @@ def main() -> int:
         print(f"Regenerated {CODEX_PACKAGE / 'skills'} from {CANONICAL} ({len(wanted)} files).")
     else:
         print(f"{CODEX_PACKAGE / 'skills'} was already up to date ({len(wanted)} files).")
+    print(f"Edit {CANONICAL}; the copy is generated. See com.openai.codex/README.md.")
     return 0
 
 
