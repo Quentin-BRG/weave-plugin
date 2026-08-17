@@ -20,7 +20,8 @@
   "extensions": {
     "com.openai.codex": {
       "packageDirectory": "./com.openai.codex/weave",
-      "marketplace": "./.agents/plugins/marketplace.json"
+      "marketplace": "./.agents/plugins/marketplace.json",
+      "composerIcon": "./com.openai.codex/weave/assets/weave-icon.png"
     }
   }
 }

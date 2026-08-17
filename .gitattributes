@@ -2,3 +2,8 @@
 # validators run from a shebang on Unix. Keep line endings LF everywhere so a
 # Windows checkout cannot change what a client or a shell sees.
 * text=auto eol=lf
+
+# The icon is bytes, not text. Auto-detection already classifies it correctly, but
+# the rule above is broad enough that saying so outright costs nothing and removes
+# any chance of a checkout rewriting line endings inside the image.
+*.png binary

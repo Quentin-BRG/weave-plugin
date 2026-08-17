@@ -47,6 +47,14 @@ exactly this purpose, so a portable client ignores everything in here.
 
 ## What is hand-written here
 
-Only `weave/.codex-plugin/plugin.json` — the Codex-native manifest, which carries
-the presentation metadata (`interface`) that the portable manifest deliberately does
-not.
+`weave/.codex-plugin/plugin.json` — the Codex-native manifest, which carries the
+presentation metadata (`interface`) that the portable manifest deliberately does not.
+
+And `weave/assets/weave-icon.png` — the plugin icon, referenced as `composerIcon` by
+both manifests. It is not drawn here: it is a byte-for-byte copy of the 512×512
+rasterisation the Weave CLI repository already ships for every platform, at
+`assets/icons/linux/hicolor/512x512/apps/weave.png`, itself generated from
+`docs/assets/weave-icon.svg`. Copying the existing rasterisation rather than making a
+new one is what keeps the plugin icon identical to the application icon instead of
+merely similar to it. `brandColor` in the Codex manifest is `#0044FE`, the accent
+colour of that same image.
