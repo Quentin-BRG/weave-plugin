@@ -1,6 +1,7 @@
 ---
 name: weave-conflict
 description: Use when weave status reports open conflicts, or after a Weave operation reports that changes could not be merged automatically. Reads every preserved candidate, produces one coherent reconciled file, and resolves the conflict atomically.
+compatibility: Requires Weave CLI 0.1.0-rc.3 with application protocol 4. The host and all participants must use matching protocol versions.
 ---
 
 # Resolving a Weave conflict
@@ -116,3 +117,6 @@ reconciliation against the new canonical content, and resolve again.
 
 `weave commit prepare` fails while any conflict is open. Resolve or dismiss them all
 before preparing a Git publication.
+
+If `weave status --json` fails or cannot determine daemon state, keep the same raw
+Git restriction until stopped state is confirmed. See `weave-collaboration`.

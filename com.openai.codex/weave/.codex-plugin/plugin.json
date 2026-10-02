@@ -1,6 +1,6 @@
 {
   "name": "weave",
-  "version": "1.0.0",
+  "version": "1.1.0-rc.1",
   "description": "Work safely inside a Weave live collaboration session: a shared working tree, Tasks with advisory soft locks, explicit conflicts, and host-only Git publication, all driven through the weave CLI.",
   "author": {
     "name": "Quentin-BRG",

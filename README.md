@@ -11,6 +11,10 @@ reconcile conflicts without ever writing Git conflict markers, and publish to Gi
 
 ## Requires the Weave CLI
 
+Plugin **1.1.0-rc.1** targets **Weave 0.1.0-rc.3 (application protocol 4)**.
+Upgrade the CLI on the host and all participants together, then update these
+skills. The new status fields and recovery commands require that CLI version.
+
 This package contains instructions, not an implementation. It is useless on its own.
 
 Install the `weave` binary first: **https://github.com/Quentin-BRG/weave**
