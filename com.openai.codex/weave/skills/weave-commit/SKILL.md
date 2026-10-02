@@ -1,6 +1,7 @@
 ---
 name: weave-commit
 description: Use when work in a Weave session should become a Git commit. Prepares an immutable publication target, writes a semantic commit message from Task history and the diff, and creates the publication through Weave rather than raw Git.
+compatibility: Requires Weave CLI 0.1.0-rc.3 with application protocol 4. The host and all participants must use matching protocol versions.
 ---
 
 # Publishing a Weave session to Git
@@ -125,3 +126,6 @@ working tree = latest live revision
 
 so everything produced after the prepared revision correctly remains visible as
 uncommitted work. That is expected, not a mistake to "fix" with Git.
+
+If `weave status --json` fails or cannot determine daemon state, keep the same raw
+Git restriction until stopped state is confirmed. See `weave-collaboration`.

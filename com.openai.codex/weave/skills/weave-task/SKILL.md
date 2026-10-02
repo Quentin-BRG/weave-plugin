@@ -1,6 +1,7 @@
 ---
 name: weave-task
 description: Use before making substantial changes in an active Weave session. Creates and maintains a Weave Task describing intent, declares advisory file and line-range scopes, and reports overlaps with other participants' Tasks.
+compatibility: Requires Weave CLI 0.1.0-rc.3 with application protocol 4. The host and all participants must use matching protocol versions.
 ---
 
 # Weave Tasks
@@ -101,3 +102,6 @@ A line range is recorded against the file entry it was declared on. When the fil
 moves on and Weave cannot map the range safely, the scope is marked `stale` and
 degrades to file-level overlap. This is expected; re-declare the range with
 `weave task update` if precision matters.
+
+If `weave status --json` fails or cannot determine daemon state, keep the same raw
+Git restriction until stopped state is confirmed. See `weave-collaboration`.

@@ -1,6 +1,7 @@
 ---
 name: weave-collaboration
 description: Use whenever you are about to read or modify files in a repository that may be in a Weave live collaboration session. Teaches the shared-working-tree model, how to check for an active session, and the rule that Weave owns all Git-writing operations.
+compatibility: Requires Weave CLI 0.1.0-rc.3 with application protocol 4. The host and all participants must use matching protocol versions.
 ---
 
 # Working inside a Weave session
@@ -21,13 +22,17 @@ Before substantial file modifications, run:
 weave status --json
 ```
 
-- `"active": false` — no Weave session. Normal Git workflows apply. Stop here.
+- A successful response with `"daemon_state": "stopped"` confirms that normal Git workflows apply. `session_saved` says whether a session can be resumed.
+- A failed status or unknown daemon state does not authorize raw Git writes. Diagnose IPC access first; a sandbox-denied socket is not evidence that the daemon stopped.
 - `"active": true` — the working tree is **live shared state**. Follow the rest of
   this skill.
 
 Useful fields: `role`, `branch`, `live_revision`, `published_revision`,
 `revisions_ahead`, `connection`, `sync_state`, `participants`, `active_task`,
-`outbox_pending`, `conflicts_open`, `rejected_paths`.
+`outbox_pending`, `conflicts_open`, `rejected_paths`, `git_state`, `session_saved`,
+`daemon_state`, `transport_connected`, `synchronized`, `last_host_response_ms`,
+`unpublished_changes`. The current adopted Git state and last Weave publication
+are distinct; revision counts alone do not mean unpublished collaborative work.
 
 ## How to behave in a live session
 
@@ -67,8 +72,11 @@ git stash
 
 This applies to **host agents and participant agents alike**.
 
-Weave detects Git state changed outside itself and pauses synchronization until the
-expected state is restored; it will never repair it for you.
+Weave pauses if Git changes while its daemon runs. Stop the daemon before using Git.
+After a confirmed stop, the host may pull, commit, rebase or rewind on the same
+branch, then `weave resume` adopts the actual commit and reconciles preserved work.
+Changing branches requires a new session. Never recommend a generic `reset --hard`
+or recloning to recover a saved session.
 
 Read-only Git remains allowed and useful:
 
@@ -104,11 +112,23 @@ filters, and it is why a participant running `git commit` by hand does not produ
   unless the user explicitly asks.
 - `connection == "offline"` — the host is unreachable. Local editing is safe and
   every change is durably queued in the local outbox; it will be reconciled on
-  reconnect. Do not try to work around it.
+  reconnect. Check `outbox_pending`; do not use raw Git to bypass the daemon.
+- If the LAN address changed, the host runs `weave invite refresh` and shares the
+  resulting invitation. Participants use `weave join` with that invitation, even
+  while their daemon runs. The session identity, secret and outbox are retained.
+- `stop` and Ctrl+C preserve the session. `leave` waits for confirmed shutdown,
+  archives the session and detaches it; it also works when the daemon is stopped.
+- A first join negotiates the current Git commit with the authenticated host.
+  For local work, choose `--local-changes=backup|discard|cancel` according to the
+  user’s intent. Backup keeps local work separate; it is not automatically shared.
+  `weave recover --list` lists archives; `weave recover --backup <id> --export <dir>`
+  exports one to a new directory.
 
 ## Paths Weave cannot synchronize
 
 `weave status --json` reports `rejected_paths`. Weave enforces a portable filename
 subset so Windows, macOS and Linux participants can hold the same tree, and refuses
-files above 10 MiB. If a file you need appears there, rename it or leave it out of
-the session; do not try to force it through.
+unsupported tracked symbolic links. The session’s `max_file_size` governs file
+size. Shared ignores are decided by the host from canonical `.gitignore` files;
+already tracked files remain tracked. Excluded local files stay on disk. Never
+replace npm symlinks with wrappers to work around a scanner error.
